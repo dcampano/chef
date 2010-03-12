@@ -45,7 +45,10 @@ class Chef
         :default => false
 
       def session
-        @session ||= Net::SSH::Multi.start(:concurrent_connections => config[:concurrency])
+        handler = Proc.new do |server|
+            print_data server.host, "Error Connecting"
+        end
+        @session ||= Net::SSH::Multi.start(:on_error => handler, :concurrent_connections => config[:concurrency])
       end
 
 
